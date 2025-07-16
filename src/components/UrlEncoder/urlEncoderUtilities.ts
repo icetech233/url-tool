@@ -83,14 +83,8 @@ export function formatJson(obj: any): string {
 export function getExampleData() {
   return {
     object: {
-      name: "张三",
-      age: 25,
-      skills: ["JavaScript", "React", "TypeScript"],
-      address: {
-        city: "北京",
-        district: "朝阳区"
-      },
-      active: true
+      task_tag: "WT123",
+      placement_tag: "WP123"
     },
     encoded: ""
   };

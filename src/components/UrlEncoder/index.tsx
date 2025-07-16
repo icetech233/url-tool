@@ -115,8 +115,8 @@ export function UrlEncoder() {
             onChange={(e) => setInput(e.target.value)}
             placeholder={
               mode === 'encode' 
-                ? '请输入JavaScript对象，例如：\n{\n  "name": "张三",\n  "age": 25\n}'
-                : '请输入URL编码后的字符串，例如：\n%7B%22name%22%3A%22%E5%BC%A0%E4%B8%89%22%7D'
+                ? '请输入JavaScript对象，例如：\n{\n  "task_tag": "WT123",\n  "placement_tag": "WP123"\n}'
+                : '请输入URL编码后的字符串，例如：\n%%7B%22task_tag%22%3A%22WT123%22%2C%22placement_tag%22%3A%22WP123%22%7D'
             }
             className="w-full h-64 p-4 border border-gray-300 rounded-lg resize-none font-mono text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
