@@ -5,6 +5,7 @@
 
 import { useState } from 'react';
 import { useUrlEncoderState } from './urlEncoderState';
+import { motion } from 'framer-motion';
 
 export function UrlEncoder() {
   const {
@@ -43,108 +44,136 @@ export function UrlEncoder() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-6 bg-white">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
-          URL 编码/解码工具
-        </h1>
-        <p className="text-gray-600">
-          将JavaScript对象序列化后进行URL编码，或将URL编码字符串解码为对象
-        </p>
-      </div>
-
-      {/* 模式切换 */}
-      <div className="mb-6">
-        <div className="flex items-center space-x-4">
-          <button
+    <div className="space-y-6">
+      {/* 模式切换和操作按钮 */}
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="space-y-4"
+      >
+        <div className="flex flex-wrap items-center gap-2">
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
             onClick={toggleMode}
-            className="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+            className="flex items-center space-x-2 px-4 py-2 bg-[var(--primary)] text-white rounded-full hover:bg-[var(--primary-dark)] transition-all font-medium text-sm"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
             </svg>
             <span>切换到{mode === 'encode' ? '解码' : '编码'}模式</span>
-          </button>
+          </motion.button>
           
-          <button
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
             onClick={loadExample}
-            className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
+            className="px-4 py-2 bg-[var(--muted)] text-[var(--foreground)] rounded-full hover:bg-[var(--accent)] transition-all font-medium text-sm border border-[var(--border)]"
           >
             加载示例
-          </button>
+          </motion.button>
           
-          <button
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
             onClick={clearAll}
-            className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
+            className="px-4 py-2 bg-[var(--muted)] text-[var(--foreground)] rounded-full hover:bg-[var(--accent)] transition-all font-medium text-sm border border-[var(--border)]"
           >
             清空
-          </button>
+          </motion.button>
         </div>
-      </div>
 
-      {/* 当前模式提示 */}
-      <div className="mb-4">
-        <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
-          mode === 'encode' 
-            ? 'bg-blue-100 text-blue-800' 
-            : 'bg-purple-100 text-purple-800'
-        }`}>
-          {mode === 'encode' ? '编码模式' : '解码模式'}
+        {/* 当前模式提示 */}
+        <div>
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3 }}
+            className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
+              mode === 'encode' 
+                ? 'bg-[var(--primary)]/10 text-[var(--primary)] border border-[var(--primary)]/20' 
+                : 'bg-[var(--secondary)]/10 text-[var(--secondary)] border border-[var(--secondary)]/20'
+            }`}
+          >
+            {mode === 'encode' ? '编码模式' : '解码模式'}
+          </motion.div>
         </div>
-      </div>
+      </motion.div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* 输入输出区域 */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* 输入区域 */}
-        <div className="space-y-4">
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="space-y-3"
+        >
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-gray-900">
+            <h2 className="text-base font-semibold text-[var(--foreground)]">
               {mode === 'encode' ? '输入对象 (JSON格式)' : '输入URL编码字符串'}
             </h2>
             {input && (
-              <button
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={() => handleCopy(input)}
-                className="text-sm text-blue-600 hover:text-blue-800"
+                className="text-xs text-[var(--primary)] hover:text-[var(--primary-dark)] transition-colors font-medium"
               >
-                复制输入
-              </button>
+                复制
+              </motion.button>
             )}
           </div>
           
-          <textarea
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder={
-              mode === 'encode' 
-                ? '请输入JavaScript对象，例如：\n{\n  "task_tag": "WT123",\n  "placement_tag": "WP123"\n}'
-                : '请输入URL编码后的字符串，例如：\n%%7B%22task_tag%22%3A%22WT123%22%2C%22placement_tag%22%3A%22WP123%22%7D'
-            }
-            className="w-full h-64 p-4 border border-gray-300 rounded-lg resize-none font-mono text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          />
+          <motion.div
+            whileHover={{ y: -1 }}
+            transition={{ duration: 0.2 }}
+            className="relative"
+          >
+            <textarea
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder={
+                mode === 'encode' 
+                  ? '请输入JavaScript对象，例如：\n{\n  "task_tag": "WT123",\n  "placement_tag": "WP123"\n}'
+                  : '请输入URL编码后的字符串，例如：\n%%7B%22task_tag%22%3A%22WT123%22%2C%22placement_tag%22%3A%22WP123%22%7D'
+              }
+              className="w-full h-64 p-4 bg-[var(--background)] border border-[var(--border)] rounded-lg resize-none font-mono text-sm text-[var(--foreground)] placeholder-[var(--muted-foreground)] focus:ring-2 focus:ring-[var(--primary)]/30 focus:border-[var(--primary)] transition-all"
+            />
+          </motion.div>
           
-          <div className="flex space-x-2">
-            <button
-              onClick={handleProcess}
-              disabled={!input.trim()}
-              className="flex-1 py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
-            >
-              {mode === 'encode' ? '编码' : '解码'}
-            </button>
-          </div>
-        </div>
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={handleProcess}
+            disabled={!input.trim()}
+            className="w-full py-2 px-4 bg-[var(--primary)] text-white rounded-full hover:bg-[var(--primary-dark)] disabled:bg-[var(--muted)] disabled:text-[var(--muted-foreground)] disabled:cursor-not-allowed transition-all font-medium text-sm"
+          >
+            {mode === 'encode' ? '编码' : '解码'}
+          </motion.button>
+        </motion.div>
 
         {/* 输出区域 */}
-        <div className="space-y-4">
+        <motion.div 
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          className="space-y-3"
+        >
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-gray-900">
+            <h2 className="text-base font-semibold text-[var(--foreground)]">
               {mode === 'encode' ? '编码结果' : '解码结果'}
             </h2>
             {output && (
-              <button
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={() => handleCopy(output)}
-                className="text-sm text-blue-600 hover:text-blue-800"
+                className="text-xs text-[var(--primary)] hover:text-[var(--primary-dark)] transition-colors font-medium"
               >
-                复制结果
-              </button>
+                复制
+              </motion.button>
             )}
           </div>
           
@@ -153,49 +182,71 @@ export function UrlEncoder() {
               value={output}
               readOnly
               placeholder={`${mode === 'encode' ? '编码' : '解码'}结果将显示在这里...`}
-              className="w-full h-64 p-4 border border-gray-300 rounded-lg resize-none font-mono text-sm bg-gray-50"
+              className="w-full h-64 p-4 bg-[var(--muted)] border border-[var(--border)] rounded-lg resize-none font-mono text-sm text-[var(--foreground)] placeholder-[var(--muted-foreground)] transition-all"
             />
             {output && (
-              <div className="absolute top-2 right-2">
-                <span className="text-xs text-gray-500 bg-white px-2 py-1 rounded">
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+                className="absolute top-3 right-3"
+              >
+                <span className="text-xs text-[var(--muted-foreground)] bg-[var(--background)] px-2 py-0.5 rounded-full border border-[var(--border)]">
                   {output.length} 字符
                 </span>
-              </div>
+              </motion.div>
             )}
           </div>
-        </div>
+        </motion.div>
       </div>
 
       {/* 错误信息 */}
       {error && (
-        <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-          <div className="flex items-center">
-            <svg className="w-5 h-5 text-red-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
+        <motion.div 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+          className="mt-4 p-4 bg-[var(--error)]/10 border border-[var(--error)]/20 rounded-lg"
+        >
+          <div className="flex items-start">
+            <svg className="w-4 h-4 text-[var(--error)] mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
             </svg>
-            <span className="text-red-800 font-medium">错误：</span>
+            <div>
+              <span className="text-[var(--error)] font-medium text-sm">错误：</span>
+              <p className="text-[var(--error)]/80 mt-1 text-sm">{error}</p>
+            </div>
           </div>
-          <p className="text-red-700 mt-1">{error}</p>
-        </div>
+        </motion.div>
       )}
 
       {/* 复制成功提示 */}
       {copySuccess && (
-        <div className="fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg">
+        <motion.div 
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          className="fixed top-4 right-4 bg-[var(--success)]/90 text-white px-4 py-2 rounded-lg shadow-md text-sm font-medium border border-[var(--success)]/30"
+        >
           {copySuccess}
-        </div>
+        </motion.div>
       )}
 
       {/* 使用说明 */}
-      <div className="mt-8 p-6 bg-gray-50 rounded-lg">
-        <h3 className="text-lg font-semibold text-gray-900 mb-3">使用说明</h3>
-        <div className="space-y-2 text-sm text-gray-600">
-          <p><strong>编码模式：</strong>输入JavaScript对象，工具会将其转换为JSON字符串，然后进行URL编码</p>
-          <p><strong>解码模式：</strong>输入URL编码的字符串，工具会先解码，然后解析为JavaScript对象</p>
-          <p><strong>编码流程：</strong>对象 → JSON.stringify() → encodeURIComponent()</p>
-          <p><strong>解码流程：</strong>编码字符串 → decodeURIComponent() → JSON.parse()</p>
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.6 }}
+        className="mt-6 p-4 bg-[var(--muted)] border border-[var(--border)] rounded-lg"
+      >
+        <h3 className="text-base font-semibold text-[var(--foreground)] mb-3">使用说明</h3>
+        <div className="space-y-2 text-xs text-[var(--muted-foreground)]">
+          <p><strong className="text-[var(--foreground)]">编码模式：</strong>输入JavaScript对象，工具会将其转换为JSON字符串，然后进行URL编码</p>
+          <p><strong className="text-[var(--foreground)]">解码模式：</strong>输入URL编码的字符串，工具会先解码，然后解析为JavaScript对象</p>
+          <p><strong className="text-[var(--foreground)]">编码流程：</strong>对象 → JSON.stringify() → encodeURIComponent()</p>
+          <p><strong className="text-[var(--foreground)]">解码流程：</strong>编码字符串 → decodeURIComponent() → JSON.parse()</p>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }
