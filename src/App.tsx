@@ -47,7 +47,7 @@ const App: React.FC = () => {
           transition={{ duration: 0.6, delay: 0.6 }}
           className="text-center mt-8 text-[var(--muted-foreground)] text-sm"
         >
-          <p>© 2024 URL Tool | 一个功能强大的 URL 编码/解码工具</p>
+          <p>© 2026 URL Tool | 测试 URL 编码/解码工具</p>
         </motion.div>
       </motion.div>
     </div>
